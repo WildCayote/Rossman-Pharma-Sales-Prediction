@@ -61,7 +61,7 @@ class DataPreprocessor:
             df['IsBeginningOfMonth'] = (df['Date'].dt.day <= 7).astype(int)
             df['IsMidMonth'] = ((df['Date'].dt.day > 7) & (df['Date'].dt.day <= 21)).astype(int)
             df['IsEndOfMonth'] = (df['Date'].dt.day > 21).astype(int)
-            df.drop(columns=['Date', 'Dataset', 'CompetitionOpenSinceMonth', 'CompetitionOpenSinceYear'], inplace=True)
+            # df.drop(columns=['Date', 'Dataset', 'CompetitionOpenSinceMonth', 'CompetitionOpenSinceYear'], inplace=True)
 
     def feature_engineering(self):
         """Create new features based on existing data, such as holiday flags and promotional duration."""
@@ -71,12 +71,17 @@ class DataPreprocessor:
 
     def encode_categorical_data(self):
         """Convert categorical variables into numeric form using label encoding."""
-        label_columns = ['StateHoliday', 'StoreType', 'Assortment']
+        label_columns = ['StateHoliday']
         label_encoder = LabelEncoder()
 
         for column in label_columns:
-            self.train_copy[column] = label_encoder.fit_transform(self.train_copy[column].astype(str))
-            self.test_copy[column] = label_encoder.transform(self.test_copy[column].astype(str))  # Use transform on test
+            # Combine train and test data for consistent encoding
+            combined_data = pd.concat([self.train_copy[column], self.test_copy[column]], axis=0).astype(str)
+            label_encoder.fit(combined_data)
+
+            # Apply the encoding
+            self.train_copy[column] = label_encoder.transform(self.train_copy[column].astype(str))
+            self.test_copy[column] = label_encoder.transform(self.test_copy[column].astype(str))
 
     def preprocess(self):
         """Run the entire data preprocessing pipeline."""
