@@ -8,3 +8,4 @@ scipy
 sklearn
 tensorflow
 keras
+statsmodels
