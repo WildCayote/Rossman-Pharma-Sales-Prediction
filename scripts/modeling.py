@@ -106,7 +106,7 @@ class SalesModel:
     def save_model(self):
         """Save the model to a file."""
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-        filename = f"../api/model/sales_model_{timestamp}.pkl"
+        filename = f"../src/model/sales_model_{timestamp}.pkl"
         joblib.dump(self.pipeline, filename)
         print(f"Model saved as {filename}")
 
